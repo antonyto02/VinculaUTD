@@ -3,56 +3,414 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VinculaUTD</title>
+  <title>VinculaUTD | Prácticas y estadías para alumnos de la UTD</title>
+  <meta name="description" content="Plataforma web que conecta a los alumnos de la UTD con empresas de Durango que buscan practicantes o estadías.">
+  <style>
+    :root {
+      --navy: #12324F;
+      --blue: #2563A8;
+      --blue-soft: #E8F0F9;
+      --green: #1F9D6B;
+      --green-dark: #17845A;
+      --green-soft: #E6F5EE;
+      --ink: #1D2733;
+      --muted: #5A6B7A;
+      --line: #DCE4EC;
+      --bg: #F5F8FB;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: #FFFFFF;
+      line-height: 1.6;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, 100% - 48px); margin-inline: auto; }
+
+    /* ---------- Encabezado ---------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: 700; color: var(--navy); }
+    .logo-mark {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--navy); color: #FFFFFF;
+      display: grid; place-items: center; font-size: 1rem;
+    }
+    .logo .accent { color: var(--green); }
+    .nav-links { display: flex; gap: 30px; list-style: none; font-size: 0.95rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--navy); }
+
+    /* ---------- Botones ---------- */
+    .btn {
+      display: inline-block;
+      padding: 13px 28px;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--green); color: #FFFFFF; }
+    .btn-primary:hover { background: var(--green-dark); }
+    .btn-secondary { border-color: var(--navy); color: var(--navy); background: transparent; }
+    .btn-secondary:hover { background: var(--navy); color: #FFFFFF; }
+    .btn-light { border-color: #FFFFFF; color: #FFFFFF; background: transparent; }
+    .btn-light:hover { background: #FFFFFF; color: var(--navy); }
+    .btn-small { padding: 9px 20px; font-size: 0.92rem; }
+
+    /* ---------- Portada ---------- */
+    .hero { background: linear-gradient(180deg, var(--bg) 0%, #FFFFFF 100%); padding: 72px 0 84px; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 52px; align-items: center; }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 18px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .hero h1 { font-size: clamp(2.1rem, 4.2vw, 3.2rem); line-height: 1.12; color: var(--navy); margin-bottom: 20px; }
+    .hero h1 .highlight { color: var(--green); }
+    .lead { font-size: 1.12rem; color: var(--muted); max-width: 34rem; }
+    .hero-invite { margin-top: 14px; font-weight: 600; color: var(--ink); max-width: 34rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+    .hero-banner img { border-radius: 20px; box-shadow: 0 26px 50px -22px rgba(18, 50, 79, 0.5); }
+
+    /* ---------- Secciones ---------- */
+    .section { padding: 84px 0; }
+    .section-alt { background: var(--bg); }
+    .section-head { max-width: 680px; margin: 0 auto 48px; text-align: center; }
+    .section-tag { color: var(--green-dark); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .section-head h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); color: var(--navy); margin: 8px 0 14px; line-height: 1.2; }
+    .section-head p { color: var(--muted); font-size: 1.05rem; }
+
+    /* Beneficios */
+    .benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+    .card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover { box-shadow: 0 16px 32px -18px rgba(18, 50, 79, 0.35); transform: translateY(-3px); }
+    .icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: grid; place-items: center;
+      background: var(--blue-soft); color: var(--blue);
+      margin-bottom: 18px;
+    }
+    .icon svg { width: 26px; height: 26px; }
+    .card h3 { font-size: 1.1rem; color: var(--navy); margin-bottom: 8px; line-height: 1.3; }
+    .card p { color: var(--muted); font-size: 0.96rem; }
+
+    /* Cómo funciona */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; counter-reset: paso; }
+    .step { position: relative; padding: 30px 26px 28px; background: #FFFFFF; border-radius: var(--radius); border: 1px solid var(--line); }
+    .step::before {
+      counter-increment: paso;
+      content: counter(paso);
+      display: grid; place-items: center;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--navy); color: #FFFFFF;
+      font-weight: 700; font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+    .step h3 { color: var(--navy); font-size: 1.1rem; margin-bottom: 6px; }
+    .step p { color: var(--muted); font-size: 0.96rem; }
+
+    /* Para quién es */
+    .audiences { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+    .audience { padding: 24px; border-radius: var(--radius); background: #FFFFFF; border-top: 4px solid var(--blue); box-shadow: 0 1px 0 var(--line), 0 0 0 1px var(--line); }
+    .audience:nth-child(2) { border-top-color: var(--green); }
+    .audience:nth-child(3) { border-top-color: var(--navy); }
+    .audience:nth-child(4) { border-top-color: #E0A526; }
+    .audience h3 { font-size: 1.05rem; color: var(--navy); margin-bottom: 6px; }
+    .audience p { font-size: 0.95rem; color: var(--muted); }
+
+    /* Llamado a la acción */
+    .cta { background: linear-gradient(120deg, var(--navy) 0%, var(--blue) 100%); color: #FFFFFF; padding: 72px 0; }
+    .cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+    .cta h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.2; margin-bottom: 8px; }
+    .cta p { color: #D3E2F2; font-size: 1.05rem; max-width: 36rem; }
+    .cta-text { flex: 1 1 600px; }
+    .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; flex: 0 0 auto; }
+
+    /* Contacto */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: start; }
+    .contact-list { list-style: none; display: grid; gap: 16px; }
+    .contact-item { display: flex; gap: 16px; align-items: flex-start; padding: 18px 20px; background: #FFFFFF; border: 1px solid var(--line); border-radius: var(--radius); }
+    .contact-item .icon { margin: 0; flex-shrink: 0; width: 42px; height: 42px; background: var(--green-soft); color: var(--green-dark); }
+    .contact-item .icon svg { width: 22px; height: 22px; }
+    .contact-item strong { display: block; color: var(--navy); font-size: 0.95rem; }
+    .contact-item span { color: var(--muted); font-size: 0.95rem; }
+    .contact-form { background: #FFFFFF; border: 1px solid var(--line); border-radius: var(--radius); padding: 30px; display: grid; gap: 16px; }
+    .contact-form h3 { color: var(--navy); font-size: 1.2rem; }
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+    .field input, .field select, .field textarea {
+      font: inherit; font-size: 0.95rem;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .field textarea { resize: vertical; min-height: 110px; }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--blue); outline-offset: 1px; background: #FFFFFF; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Pie de página */
+    .site-footer { background: var(--navy); color: #C4D3E3; padding: 32px 0; font-size: 0.9rem; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .site-footer .logo { color: #FFFFFF; font-size: 1.1rem; }
+    .site-footer .logo-mark { background: var(--green); width: 30px; height: 30px; font-size: 0.85rem; }
+
+    /* ---------- Celulares y tabletas ---------- */
+    @media (max-width: 960px) {
+      .benefits, .audiences { grid-template-columns: repeat(2, 1fr); }
+      .steps { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 48px; }
+      .benefits, .audiences, .form-row { grid-template-columns: 1fr; }
+      .section { padding: 64px 0; }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>VinculaUTD</h1>
-    <p>Prácticas y estadías para alumnos de la UTD</p>
+  <header class="site-header">
+    <nav class="container nav">
+      <a href="#inicio" class="logo"><span class="logo-mark">V</span><span>Vincula<span class="accent">UTD</span></span></a>
+      <ul class="nav-links">
+        <li><a href="#por-que">Beneficios</a></li>
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#usuarios">¿Para quién es?</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <a href="#comenzar" class="btn btn-primary btn-small">Comienza ahora</a>
+    </nav>
   </header>
 
   <main>
-    <section id="presentacion">
-      <h2>Encuentra tu estadía sin buscar a ciegas</h2>
-      <p>VinculaUTD es una plataforma web que reúne en un solo lugar las vacantes de prácticas y estadías de las empresas de Durango. Creas tu perfil con tu carrera, tus habilidades y tu CV, el sistema te recomienda las vacantes que más te quedan y, antes de postularte, puedes leer lo que opinan los exalumnos que ya estuvieron en esa empresa.</p>
-      <p>¿Te toca hacer prácticas o estadía? Crea tu perfil en VinculaUTD y encuentra una empresa que vaya con tu carrera. Si eres empresa, publica tus vacantes y recibe postulaciones de alumnos de la UTD.</p>
-      <img src="img/banner.svg" alt="Banner de VinculaUTD: alumnos de la UTD conectados con empresas de Durango" width="800">
+    <!-- Portada -->
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Prácticas y estadías para alumnos de la UTD</span>
+          <h1>Encuentra tu estadía <span class="highlight">sin buscar a ciegas</span></h1>
+          <p class="lead">VinculaUTD es una plataforma web que reúne en un solo lugar las vacantes de prácticas y estadías de las empresas de Durango. Creas tu perfil con tu carrera, tus habilidades y tu CV, el sistema te recomienda las vacantes que más te quedan y, antes de postularte, puedes leer lo que opinan los exalumnos que ya estuvieron en esa empresa.</p>
+          <p class="hero-invite">¿Te toca hacer prácticas o estadía? Crea tu perfil y encuentra una empresa que vaya con tu carrera.</p>
+          <div class="hero-actions">
+            <a href="#comenzar" class="btn btn-primary">Comienza ahora</a>
+            <a href="#como-funciona" class="btn btn-secondary">Conoce más</a>
+          </div>
+        </div>
+        <div class="hero-banner">
+          <img src="img/banner.svg" alt="Banner de VinculaUTD: alumnos de la UTD conectados con empresas de Durango" width="800" height="420">
+        </div>
+      </div>
     </section>
 
-    <section id="por-que">
-      <h2>¿Por qué usar VinculaUTD?</h2>
-      <p>Hoy, encontrar empresa para las prácticas depende mucho de la suerte. Los alumnos buscan con conocidos o en grupos de Facebook sin saber qué empresas aceptan practicantes ni qué perfil piden. Eso hace perder semanas y a veces termina en una estadía que no tiene nada que ver con la carrera. VinculaUTD junta en un solo lugar las vacantes, las recomendaciones automáticas y las opiniones reales de exalumnos.</p>
+    <!-- Por qué usar VinculaUTD -->
+    <section class="section" id="por-que">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Beneficios</span>
+          <h2>¿Por qué usar VinculaUTD?</h2>
+          <p>Hoy, encontrar empresa para las prácticas depende mucho de la suerte. Los alumnos buscan con conocidos o en grupos de Facebook sin saber qué empresas aceptan practicantes ni qué perfil piden. VinculaUTD junta en un solo lugar las vacantes, las recomendaciones automáticas y las opiniones reales de exalumnos.</p>
+        </div>
 
-      <h3>Beneficios</h3>
-      <ul>
-        <li>
-          <h4>Todas las vacantes en un solo lugar</h4>
-          <p>Las empresas de Durango publican sus vacantes de prácticas y estadías en la plataforma. Ya no tienes que buscar en grupos de Facebook ni preguntar con conocidos.</p>
-        </li>
-        <li>
-          <h4>Recomendaciones según tu perfil</h4>
-          <p>El sistema compara tu carrera y tus habilidades con lo que pide cada vacante y te sugiere las que más te quedan.</p>
-        </li>
-        <li>
-          <h4>Opiniones de exalumnos</h4>
-          <p>Antes de postularte puedes leer cómo les fue a otros alumnos en esa empresa, para que sepas a qué vas.</p>
-        </li>
-        <li>
-          <h4>Acompañamiento de Vinculación</h4>
-          <p>El área de Vinculación de la UTD ve quién ya tiene empresa y quién sigue buscando, así puede apoyarte a tiempo.</p>
-        </li>
-      </ul>
+        <div class="benefits">
+          <article class="card">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>
+            </div>
+            <h3>Todas las vacantes en un solo lugar</h3>
+            <p>Las empresas de Durango publican sus vacantes de prácticas y estadías en la plataforma. Ya no tienes que buscar en grupos de Facebook ni preguntar con conocidos.</p>
+          </article>
+          <article class="card">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+            </div>
+            <h3>Recomendaciones según tu perfil</h3>
+            <p>El sistema compara tu carrera y tus habilidades con lo que pide cada vacante y te sugiere las que más te quedan.</p>
+          </article>
+          <article class="card">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
+            </div>
+            <h3>Opiniones de exalumnos</h3>
+            <p>Antes de postularte puedes leer cómo les fue a otros alumnos en esa empresa, para que sepas a qué vas.</p>
+          </article>
+          <article class="card">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><rect x="5" y="11" width="3" height="7"/><rect x="10.5" y="6" width="3" height="12"/><rect x="16" y="13" width="3" height="5"/></svg>
+            </div>
+            <h3>Acompañamiento de Vinculación</h3>
+            <p>El área de Vinculación de la UTD ve quién ya tiene empresa y quién sigue buscando, así puede apoyarte a tiempo.</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <section id="usuarios">
-      <h2>¿Para quién es?</h2>
-      <ul>
-        <li>Alumnos de la UTD que van a hacer prácticas o estadía.</li>
-        <li>Empresas de Durango que buscan practicantes con un perfil específico.</li>
-        <li>El área de Vinculación de la UTD, que lleva el control de las prácticas.</li>
-        <li>Exalumnos que quieren compartir cómo les fue en la empresa donde estuvieron.</li>
-      </ul>
+    <!-- Cómo funciona -->
+    <section class="section section-alt" id="como-funciona">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Cómo funciona</span>
+          <h2>Tres pasos para encontrar tu empresa</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <h3>Crea tu perfil</h3>
+            <p>Registra tu carrera y tus habilidades, y sube tu CV. Las empresas crean también su perfil y publican sus vacantes.</p>
+          </div>
+          <div class="step">
+            <h3>Revisa tus recomendaciones</h3>
+            <p>La plataforma te muestra las vacantes que mejor coinciden con tu perfil, junto con las reseñas de cada empresa.</p>
+          </div>
+          <div class="step">
+            <h3>Postúlate y da seguimiento</h3>
+            <p>Aplica desde la plataforma y consulta el estado de tus postulaciones. Vinculación ve tu avance en su panel.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Para quién es -->
+    <section class="section" id="usuarios">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Usuarios</span>
+          <h2>¿Para quién es?</h2>
+        </div>
+        <div class="audiences">
+          <div class="audience">
+            <h3>Alumnos de la UTD</h3>
+            <p>Que van a hacer prácticas o estadía y buscan una empresa que vaya con su carrera.</p>
+          </div>
+          <div class="audience">
+            <h3>Empresas de Durango</h3>
+            <p>Que buscan practicantes con un perfil específico y quieren recibir postulaciones de la UTD.</p>
+          </div>
+          <div class="audience">
+            <h3>Vinculación UTD</h3>
+            <p>Que lleva el control de las prácticas y necesita saber dónde está cada alumno.</p>
+          </div>
+          <div class="audience">
+            <h3>Exalumnos</h3>
+            <p>Que comparten cómo les fue en la empresa donde estuvieron para orientar a los que vienen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Llamado a la acción -->
+    <section class="cta" id="comenzar">
+      <div class="container cta-inner">
+        <div class="cta-text">
+          <h2>¿Te toca hacer prácticas o estadía?</h2>
+          <p>Crea tu perfil y empieza a recibir vacantes que van con tu carrera. Si eres empresa, publica tu primera vacante.</p>
+        </div>
+        <div class="cta-actions">
+          <button type="button" class="btn btn-primary">Comienza ahora</button>
+          <button type="button" class="btn btn-light">Soy empresa</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contacto -->
+    <section class="section section-alt" id="contacto">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Contacto</span>
+          <h2>¿Tienes dudas? Escríbenos</h2>
+          <p>Si eres alumno, empresa o parte de la UTD y quieres saber más de VinculaUTD, ponte en contacto con nosotros.</p>
+        </div>
+        <div class="contact-grid">
+          <ul class="contact-list">
+            <li class="contact-item">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              </div>
+              <div><strong>Correo</strong><span>contacto@vinculautd.mx</span></div>
+            </li>
+            <li class="contact-item">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+              </div>
+              <div><strong>Teléfono</strong><span>618 555 0142</span></div>
+            </li>
+            <li class="contact-item">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+              </div>
+              <div><strong>Dirección</strong><span>Oficina VinculaUTD, Av. de las Prácticas 120, Col. Centro, Durango, Dgo.</span></div>
+            </li>
+            <li class="contact-item">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </div>
+              <div><strong>Horario de atención</strong><span>Lunes a viernes, de 8:00 a 15:00 h</span></div>
+            </li>
+          </ul>
+
+          <form class="contact-form" onsubmit="return false;">
+            <h3>Envíanos un mensaje</h3>
+            <div class="form-row">
+              <div class="field">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" placeholder="Tu nombre">
+              </div>
+              <div class="field">
+                <label for="correo">Correo</label>
+                <input type="email" id="correo" placeholder="tucorreo@ejemplo.com">
+              </div>
+            </div>
+            <div class="field">
+              <label for="tipo">Soy</label>
+              <select id="tipo">
+                <option>Alumno de la UTD</option>
+                <option>Empresa</option>
+                <option>Personal de la UTD</option>
+                <option>Exalumno</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="mensaje">Mensaje</label>
+              <textarea id="mensaje" placeholder="Cuéntanos en qué te podemos ayudar"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary">Enviar mensaje</button>
+          </form>
+        </div>
+      </div>
     </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="logo"><span class="logo-mark">V</span>VinculaUTD</span>
+      <span>© 2026 VinculaUTD · Proyecto académico. Los datos de contacto son ficticios.</span>
+    </div>
+  </footer>
 </body>
 </html>
